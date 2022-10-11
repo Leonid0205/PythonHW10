@@ -6,8 +6,8 @@ from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Updater, CommandHandler, Filters, MessageHandler, ConversationHandler
 
 RESPONSE, EXIT_APP, INPUT_LAST_NAME, SEARCH, ACTION_CHOOSEN_CONTACT, ID_CONTACT_INPUT, \
-REPLY_SEARCH, ACTION_USER_REPLY, INPUT_LAST_NAME_ACTION, \
-INPUT_FIRST_NAME_ACTION, INPUT_TELEPHONE_ACTION, INPUT_COMMENT_ACTION, INPUT_LAST_NAME, INPUT_FIRST_NAME, \
+REPLY_SEARCH, ACTION_USER, ACTION_USER_REPLY, INPUT_LAST_NAME_ACTION, \
+INPUT_FIRST_NAME_ACTION, INPUT_TELEPHONE_ACTION, INPUT_COMMENT_ACTION, INPUT_FIRST_NAME, \
 INPUT_PHONE, INPUT_COMMENT = range(16)
 
 tel_dir = {}
@@ -34,7 +34,7 @@ def first_name(update, _):
 
 def telephone(update, _):
     global tel_dir
-    if checks.check_text(update, update.message.text):
+    if checks.check_telephone(update, update.message.text):
         tel_dir['Telephone'] = (update.message.text).title()
         update.message.reply_text('Input contact comment: ')
         return INPUT_COMMENT
@@ -102,7 +102,7 @@ def search_in_telphone_directory(update, _):
     telephone_dir = read_or_write_condition(tel_dir, 'r')
     if not (update.message.text).isnumeric():
         for i in telephone_dir:
-            if update.message.text in i['Last name'] or update.message.text in i['First name'] :
+            if update.message.text in i['Last name'] or update.message.text in i['First name'] or update.message.text in i['Comment']:
                 search_result.append(i)
     else:
         for i in telephone_dir:
@@ -139,12 +139,12 @@ def contact_id(update, _):
                                   f'First name: {search_result[number_condition - 1]["First name"]}\n'
                                   f'Telephone: {search_result[number_condition - 1]["Telephone"]}\n'
                                   f'Comment: {search_result[number_condition - 1]["Comment"]}\n')
-        reply_keyboard = [[menu.DELETE], [menu.CHANGE], [menu.EXIT_TO_MENU]]
+        reply_keyboard = [['Delete contact'], ['Change contact'], ['Exit to main menu']]
         markup_key = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
         update.message.reply_text(f'{update.effective_user.first_name}!\n'
-                                   'What do you ewant to do?',
+                                   'What do you want to do?',
                                    reply_markup=markup_key)
-        return ACTION_USER_REPLY
+        return ACTION_USER
     else:
         return ID_CONTACT_INPUT
 
@@ -161,8 +161,8 @@ def delete_contact(update, _):
 def change_last_name(update, _):
     global search_result
     global number_condition
-    if checks.check_text(update, update.message.text):
-        read_or_write_change(update.message.text,'Last name')
+    if checks.check_text(update, update.message.text) == True:
+        read_or_write_change(update.message.text, 'Last name')
         search_result = []
         update.message.reply_text('The contact last_name is changed.')
         return menu.start(update, _)
@@ -172,7 +172,7 @@ def change_last_name(update, _):
 def change_first_name(update, _):
     global search_result
     global number_condition
-    if checks.check_text(update, update.message.text):
+    if checks.check_text(update, update.message.text) == True:
         read_or_write_change(update.message.text, 'First name')
         search_result = []
         update.message.reply_text('The contact first_name is changed.')
@@ -183,22 +183,23 @@ def change_first_name(update, _):
 def change_telelephone(update, _):
     global search_result
     global number_condition
-
-    if checks.check_text(update, update.message.text):
-        read_or_write_change(update.message.text, 'First name')
+    if checks.check_telephone(update, update.message.text) == True:
+        read_or_write_change(update.message.text, 'Telephone')
         search_result = []
         update.message.reply_text('The contact first_name is changed.')
         return menu.start(update, _)
     else:
         return INPUT_TELEPHONE_ACTION
+        # return INPUT_COMMENT_ACTION
 
 def change_comment(update, _):
     global search_result
     global number_condition
-    if checks.check_text(update, update.message.text):
+    if checks.check_text(update, update.message.text) == True:
         read_or_write_change(update.message.text, 'Comment')
         search_result = []
         update.message.reply_text('The contact comment is changed.')
         return menu.start(update, _)
     else:
         return INPUT_COMMENT_ACTION
+

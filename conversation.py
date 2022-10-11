@@ -38,6 +38,9 @@ conv_handler = ConversationHandler(
         menu.INPUT_FIRST_NAME_ACTION: [MessageHandler(Filters.text & ~Filters.command, change_first_name)],
         menu.INPUT_TELEPHONE_ACTION: [MessageHandler(Filters.text & ~Filters.command, change_telelephone)],
         menu.INPUT_COMMENT_ACTION: [MessageHandler(Filters.text & ~Filters.command, change_comment)],
+
+        
+
         menu.EXIT_APP: [MessageHandler(Filters.text, menu.cancel)]
     },
     # точка выхода из разговора

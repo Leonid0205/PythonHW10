@@ -12,18 +12,19 @@ def export(update, _):
         return menu.start(update, _)
     count = 0
     with open('telephone_directory.csv', mode = 'w', encoding = 'utf-8') as t_d_w:
-        writer = csv.writer(t_d_w, delimiter = ',', lineterminator = '\r')
-        writer.writerow(['Last name\t', 'First name\t', 'Telephone\t', 'Comment\t'])
+        writer = csv.writer(t_d_w, delimiter = '\t', lineterminator = '\r')
+        writer.writerow(['Last name', 'First name', 'Telephone', 'Comment'])
         for i in telephone_dir:
-            writer.writerow([i['Last name'],i['First name'], i['Telephone'], i['Comment']])
+            writer.writerow([i['Last name'], i['First name'], i['Telephone'], i['Comment']])
             count += 1
     update.message.reply_text(f'Export is finished.\n')
     return menu.start(update, _)
 
 def import_j(update, _):
     dumper = []
-    with open('import_file.csv', encoding = 'utf-8') as imp_read_file:
-        reader = csv.reader(imp_read_file, delimiter = ',')
+    with open('telephone_directory.csv', encoding = 'utf-8') as imp_read_file:
+        reader = csv.reader(imp_read_file, delimiter = '\t')
+        next(reader)
         try:
             for row in reader:
                     temp_dict = {}

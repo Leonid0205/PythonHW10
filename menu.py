@@ -22,8 +22,8 @@ EXIT_TO_MENU = 'Exit to main menu'
 
 RESPONSE, EXIT_APP, INPUT_LAST_NAME, SEARCH, ACTION_CHOOSEN_CONTACT, ID_CONTACT_INPUT, \
 REPLY_SEARCH, ACTION_USER, ACTION_USER_REPLY, INPUT_LAST_NAME_ACTION, \
-INPUT_FIRST_NAME_ACTION, INPUT_TELEPHONE_ACTION, INPUT_COMMENT_ACTION, INPUT_LAST_NAME, INPUT_FIRST_NAME, \
-INPUT_PHONE, INPUT_COMMENT = range(17)
+INPUT_FIRST_NAME_ACTION, INPUT_TELEPHONE_ACTION, INPUT_COMMENT_ACTION, INPUT_FIRST_NAME, \
+INPUT_PHONE, INPUT_COMMENT = range(16)
 
 def start(update, _):
     reply_keyboard = [['Save contact', 'Find contact', 'Show all contacts',],['Export', 'Import', 'Exit']]
@@ -69,7 +69,7 @@ def reply_menu(update, _):
     elif reply == FIND_CONTACT:
         logger.my_log(update, CallbackContext, 'Find contact.')
         update.message.reply_text(f'{update.effective_user.first_name}\n'
-                                   'Input first name, last name or telephone:\n',
+                                   'Input first name, last name, telephone or comment:\n',
                                    reply_markup=ReplyKeyboardRemove())
         return SEARCH
 
@@ -99,7 +99,7 @@ def response_search(update, _):
 
     if reply == CHANGE_CONDITIONS:
         logger.my_log(update, CallbackContext, 'Changing conditions.')
-        update.message.reply_text('Input first name, last name or telephine:\n',
+        update.message.reply_text('Input first name, last name, telephone or comment:\n',
                                   reply_markup=ReplyKeyboardRemove())
         return SEARCH
 
@@ -113,7 +113,7 @@ def response_chosen_contact(update, _):
         return start(update, _)
 
     if reply == CHOSE_CONTACT:
-        update.message.reply_text('Input cantact ID:',
+        update.message.reply_text('Input contact ID:',
                                   reply_markup=ReplyKeyboardRemove())
         return ID_CONTACT_INPUT
 
